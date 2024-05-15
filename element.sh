@@ -9,6 +9,10 @@ else
   if [[ $1 =~ ^[0-9]+$ ]]
   then
     element=$($PSQL "SELECT atomic_number, symbol, name, atomic_mass, melting_point_celsius, boiling_point_celsius, type FROM elements INNER JOIN properties USING(atomic_number) LEFT JOIN types USING(type_id) WHERE atomic_number=$1;")
+  # If first argument is 2 characters in length
+  elif [[ ${#1} -le 2 ]]
+  then
+    element=$($PSQL "SELECT atomic_number, symbol, name, atomic_mass, melting_point_celsius, boiling_point_celsius, type FROM elements INNER JOIN properties USING(atomic_number) LEFT JOIN types USING(type_id) WHERE symbol='$1';")
   fi
   echo $element | while IFS='|' read atomic_number symbol name atomic_mass melting_point boiling_point type
     do
